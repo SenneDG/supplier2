@@ -5,11 +5,14 @@ import java.util.UUID;
 
 public class ShopItem {
     private UUID id;
+    public String supplier = "Supplier 2";
     private String name;
     private String description;
     private double price;
     private int quantity;
     private String imageUrl;
+    private boolean isLocked;
+    private int lockedQuantity;
 
     // getters and setters
     public UUID getId() {
@@ -58,6 +61,22 @@ public class ShopItem {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
+
+    public int getLockedQuantity() {
+        return lockedQuantity;
+    }
+
+    public void setLockedQuantity(int lockedQuantity) {
+        this.lockedQuantity = lockedQuantity;
     }
 
     @Override

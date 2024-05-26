@@ -18,19 +18,19 @@ public class ShopItemRepository {
     public void init() {
         ShopItem item1 = new ShopItem();
         item1.setId(ITEM1_UUID);
-        item1.setName("Acer Chromebook 315 CB315-4H-C229");
-        item1.setDescription("Deze Acer Chromebook 315 CB315-4H-C229 is uniek vanwege het Full HD beeldscherm dat ideaal is voor films/series en het grote formaat beeldscherm.");
-        item1.setPrice(322.99);
+        item1.setName("KARMELIET TRIPEL 75CL");
+        item1.setDescription("Karmeliet Tripel 75cl is het absolute boegbeeld van de brouwerij. Iedere fles Karmeliet Tripel wordt gemaakt op basis van een oud en historisch drie-granenrecept, bestaande uit tarwe, haver en gerst. Ook vandaag de dag zien de brouwmeesters van dit merk dit nog steeds als het ideale recept voor hun speciaalbier Naar eigen zeggen is iedere slok die je van dit tripel bier neemt een 'reis voor de zintuigen'.");
+        item1.setPrice(7.75);
         item1.setQuantity(12);
-        item1.setImageUrl("https://media.s-bol.com/3rV108YXGAv4/EDyPGY/1200x851.jpg");
+        item1.setImageUrl("https://res.cloudinary.com/boozeboodcdn/image/upload/f_auto/e_trim:10/c_pad/g_south/w_140/h_455/c_limit,w_140,h_455/q_auto:best/v20210322/HD/09012.jpg");
 
         ShopItem item2 = new ShopItem();
         item2.setId(ITEM2_UUID);
-        item2.setName("Lenovo IdeaPad 1 15ALC7 82R400FCMH");
-        item2.setDescription("Deze Lenovo IdeaPad 1 15ALC7 (82R400FCMH) laptop is geschikt voor het werken in Excel en uitvoeren van meerdere programma's tegelijk.");
-        item2.setPrice(429.0);
+        item2.setName("LA CHOUFFE 75CL");
+        item2.setDescription("La Chouffe 75cl is een Belgisch blond bier dat bekendstaat om een verfrissend en licht kruidig karakter. La Chouffe bier is een bier van hoge gisting met nagisting op de fles. Verder heeft het een vol en rijk karakter waarin toetsen van kruiden en fruit samenkomen met het beste van hop.");
+        item2.setPrice(5.25);
         item2.setQuantity(7);
-        item2.setImageUrl("https://media.s-bol.com/gPKJDKlKKjOj/grkn73/1200x1200.jpg");
+        item2.setImageUrl("https://res.cloudinary.com/boozeboodcdn/image/upload/f_auto/e_trim:10/c_pad/g_south/w_140/h_455/c_limit,w_140,h_455/q_auto:best/v20210322/HD/09001.jpg");
 
         shopItems.put(item1.getId(), item1);
         shopItems.put(item2.getId(), item2);
@@ -59,6 +59,7 @@ public class ShopItemRepository {
         shopItem.setPrice(updatedShopItem.getPrice());
         shopItem.setQuantity(updatedShopItem.getQuantity());
         shopItem.setImageUrl(updatedShopItem.getImageUrl());
+        shopItem.setLockedQuantity(updatedShopItem.getLockedQuantity());
     }
 
     public void deleteShopItem(UUID id) {
