@@ -1,4 +1,4 @@
-package com.example.supplier_1;
+package com.example.supplier_2;
 
 import java.util.Arrays;
 

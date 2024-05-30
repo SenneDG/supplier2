@@ -1,4 +1,4 @@
-package com.example.supplier_1.domain;
+package com.example.supplier_2.domain;
 
 import java.util.Objects;
 import java.util.UUID;

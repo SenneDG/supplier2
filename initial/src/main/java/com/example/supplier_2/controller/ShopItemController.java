@@ -1,4 +1,4 @@
-package com.example.supplier_1.controllers;
+package com.example.supplier_2.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.example.supplier_1.domain.ShopItem;
-import com.example.supplier_1.domain.ShopItemRepository;
+import com.example.supplier_2.domain.ShopItem;
+import com.example.supplier_2.domain.ShopItemRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.annotation.PostConstruct;
@@ -34,7 +34,9 @@ import org.slf4j.LoggerFactory;
 public class ShopItemController {
 
     private final ShopItemRepository shopItemRepository;
+    private static final String API_KEY = "Iw8zeveVyaPNWonPNaU0213uw3g6Ei";
     private static final Logger logger = LoggerFactory.getLogger(ShopItemController.class);
+
     public enum TransactionStatus {
         PREPARE,
         COMMIT,
@@ -76,10 +78,10 @@ public class ShopItemController {
                                         .collect(Collectors.toList());
                                 if(lastOrderStatus == TransactionStatus.COMMIT) {
                                     System.out.println("Transaction was committed");
-                                    checkoutCommit(items);
+                                    checkoutCommit(items, API_KEY);
                                 } else {
                                     System.out.println("Transaction was rolled back");
-                                    checkoutRollback(items);
+                                    checkoutRollback(items, API_KEY);
                                 }
                             },
                             error -> {
@@ -104,34 +106,51 @@ public class ShopItemController {
     }
 
     @GetMapping
-    public CollectionModel<EntityModel<ShopItem>> getAllShopItems() {
+    public ResponseEntity<?> getAllShopItems(@RequestParam(value = "key") String apiKey) {
+        if (!API_KEY.equals(apiKey)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         var shopItems = shopItemRepository.getAllShopItems().stream()
                 .map(shopItem -> EntityModel.of(shopItem,
-                        WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ShopItemController.class).getShopItemById(shopItem.getId())).withSelfRel(),
-                        WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ShopItemController.class).getAllShopItems()).withRel("shop-items")))
+                        WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ShopItemController.class).getShopItemById(shopItem.getId(), API_KEY)).withSelfRel(),
+                        WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ShopItemController.class).getAllShopItems(apiKey)).withRel("shop-items")))
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(shopItems,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ShopItemController.class).getAllShopItems()).withSelfRel());
+        return ResponseEntity.ok(CollectionModel.of(shopItems,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ShopItemController.class).getAllShopItems(apiKey)).withSelfRel()));
     }
 
     @GetMapping("/{id}")
-    public EntityModel<ShopItem> getShopItemById(@PathVariable UUID id) {
+    public ResponseEntity<EntityModel<ShopItem>> getShopItemById(@PathVariable UUID id, @RequestParam(value = "key") String apiKey) {
+        if (!API_KEY.equals(apiKey)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
         ShopItem shopItem = shopItemRepository.findShopItem(id).orElseThrow(() -> new RuntimeException("Item not found: " + id));
 
-        return EntityModel.of(shopItem,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ShopItemController.class).getShopItemById(id)).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ShopItemController.class).getAllShopItems()).withRel("shop-items"));
+        EntityModel<ShopItem> shopItemModel = EntityModel.of(shopItem,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ShopItemController.class).getShopItemById(id, API_KEY)).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ShopItemController.class).getAllShopItems(API_KEY)).withRel("shop-items"));
+
+        return new ResponseEntity<>(shopItemModel, HttpStatus.OK);
     }
 
     @PostMapping
-    ShopItem addShopItem(@RequestBody ShopItem shopItem) {
+    public ResponseEntity<ShopItem> addShopItem(@RequestBody ShopItem shopItem, @RequestParam(value = "key") String apiKey){
+        if (!API_KEY.equals(apiKey)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
         shopItemRepository.addShopItem(shopItem);
-        return shopItem;
+        return new ResponseEntity<>(shopItem, HttpStatus.OK);
     }
 
     @PostMapping("/prepare-checkout")
-    public ResponseEntity<Void> prepareCheckout(@RequestBody List<ShopItem> shopItems) {
+    public ResponseEntity<Void> prepareCheckout(@RequestBody List<ShopItem> shopItems, @RequestParam(value = "key") String apiKey){
+        if (!API_KEY.equals(apiKey)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
         for (ShopItem shopItem : shopItems) {
             UUID id = shopItem.getId();
             int quantity = shopItem.getQuantity();
@@ -154,7 +173,10 @@ public class ShopItemController {
     }
 
     @PostMapping("/commit-checkout")
-    public synchronized ResponseEntity<Void> checkoutCommit(@RequestBody List<ShopItem> shopItems) {
+    public synchronized ResponseEntity<Void> checkoutCommit(@RequestBody List<ShopItem> shopItems, @RequestParam(value = "key") String apiKey){
+        if (!API_KEY.equals(apiKey)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         for (ShopItem shopItem : shopItems) {
             UUID id = shopItem.getId();
             int quantity = shopItem.getQuantity();
@@ -173,7 +195,11 @@ public class ShopItemController {
     }
 
     @PostMapping("/rollback-checkout")
-    public synchronized ResponseEntity<Void> checkoutRollback(@RequestBody List<ShopItem> shopItems) {
+    public synchronized ResponseEntity<Void> checkoutRollback(@RequestBody List<ShopItem> shopItems, @RequestParam(value = "key") String apiKey){
+        if (!API_KEY.equals(apiKey)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
         for (ShopItem shopItem : shopItems) {
             UUID id = shopItem.getId();
             ShopItem existingShopItem = shopItemRepository.findShopItem(id).orElseThrow(() -> new RuntimeException("Item not found: " + id));
@@ -190,14 +216,23 @@ public class ShopItemController {
     }
 
     @PutMapping("/{id}")
-    ShopItem updateShopItem(@PathVariable UUID id, @RequestBody ShopItem updatedShopItem) {
+    public ResponseEntity<ShopItem> updateShopItem(@PathVariable UUID id, @RequestBody ShopItem updatedShopItem, @RequestParam(value = "key") String apiKey){
+        if (!API_KEY.equals(apiKey)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
         shopItemRepository.updateShopItem(id, updatedShopItem);
-        return updatedShopItem;
+        return new ResponseEntity<>(updatedShopItem, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    void deleteShopItem(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteShopItem(@PathVariable UUID id, @RequestParam(value = "key") String apiKey){
+        if (!API_KEY.equals(apiKey)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
         shopItemRepository.deleteShopItem(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private void persistTransactionState(TransactionStatus status) {
