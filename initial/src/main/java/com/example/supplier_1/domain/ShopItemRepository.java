@@ -17,23 +17,32 @@ public class ShopItemRepository {
     @PostConstruct
     public void init() {
         ShopItem item1 = new ShopItem();
-        item1.setId(ITEM1_UUID);
-        item1.setName("KARMELIET TRIPEL 75CL");
-        item1.setDescription("Karmeliet Tripel 75cl is het absolute boegbeeld van de brouwerij. Iedere fles Karmeliet Tripel wordt gemaakt op basis van een oud en historisch drie-granenrecept, bestaande uit tarwe, haver en gerst. Ook vandaag de dag zien de brouwmeesters van dit merk dit nog steeds als het ideale recept voor hun speciaalbier Naar eigen zeggen is iedere slok die je van dit tripel bier neemt een 'reis voor de zintuigen'.");
-        item1.setPrice(7.75);
-        item1.setQuantity(12);
-        item1.setImageUrl("https://res.cloudinary.com/boozeboodcdn/image/upload/f_auto/e_trim:10/c_pad/g_south/w_140/h_455/c_limit,w_140,h_455/q_auto:best/v20210322/HD/09012.jpg");
-
+        item3.setId(ITEM3_UUID);
+        item3.setName("COCA-COLA 33CL");
+        item3.setDescription("Coca-Cola 33cl is een verfrissende en iconische frisdrank die bekendstaat om zijn unieke smaak en bruisende karakter. Perfect voor elke gelegenheid en heerlijk koel geserveerd.");
+        item3.setPrice(1.50);
+        item3.setQuantity(20);
+        item3.setImageUrl("https://goedkoopdrank.be/wp-content/uploads/2023/06/GD60.jpg");
+        
         ShopItem item2 = new ShopItem();
-        item2.setId(ITEM2_UUID);
-        item2.setName("LA CHOUFFE 75CL");
-        item2.setDescription("La Chouffe 75cl is een Belgisch blond bier dat bekendstaat om een verfrissend en licht kruidig karakter. La Chouffe bier is een bier van hoge gisting met nagisting op de fles. Verder heeft het een vol en rijk karakter waarin toetsen van kruiden en fruit samenkomen met het beste van hop.");
-        item2.setPrice(5.25);
-        item2.setQuantity(7);
-        item2.setImageUrl("https://res.cloudinary.com/boozeboodcdn/image/upload/f_auto/e_trim:10/c_pad/g_south/w_140/h_455/c_limit,w_140,h_455/q_auto:best/v20210322/HD/09001.jpg");
+        item4.setId(ITEM4_UUID);
+        item4.setName("SPA BLÅ 50CL");
+        item4.setDescription("Spa Blå 50cl is een verfrissend natuurlijk mineraalwater uit de Belgische Ardennen. Het staat bekend om zijn zuiverheid en zachte smaak, ideaal om op elk moment van de dag van te genieten.");
+        item4.setPrice(1.00);
+        item4.setQuantity(30);
+        item4.setImageUrl("https://www.dirckiii.nl/media/catalog/product/cache/d55535bea25a3d0676d7fc260feb4497/8/f/8f1294769bfdbd1447ca63d781f13f0c4bfae269_5410013126737_Spa_Reine_Sport.jpg");
+        
+        ShopItem item5 = new ShopItem();
+        item5.setId(ITEM5_UUID);
+        item5.setName("ORANGINA 25CL");
+        item5.setDescription("Orangina 25cl is een verfrissende frisdrank met een unieke mix van sinaasappelsap en echte vruchtvlees. Het staat bekend om zijn licht bruisende karakter en heerlijke, natuurlijke smaak. Perfect voor een verfrissende pauze.");
+        item5.setPrice(1.75);
+        item5.setQuantity(15);
+        item5.setImageUrl("https://media.carrefour.fr/medias/0dcdea4544113db486517310cc4ede47/p_540x540/03249760013319-h1l1-s12.jpg");
 
         shopItems.put(item1.getId(), item1);
         shopItems.put(item2.getId(), item2);
+        shopItems.put(item2.getId(), item3);
     }
 
     public Optional<ShopItem> findShopItem(UUID id) {
